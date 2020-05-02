@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-MedicalShop-96F57610-626A-4567-8260-CFA7FEA6FA20</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
+    <PackageReference Include="DataTables.AspNet.Core" Version="2.0.2" />
+    <PackageReference Include="EPPlus" Version="5.1.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\vendors\bootstrap\.github\CODEOWNERS" />
+    <None Include="wwwroot\vendors\bootstrap\.github\CONTRIBUTING.md" />
+    <None Include="wwwroot\vendors\bootstrap\.github\ISSUE_TEMPLATE\bug.md" />
+    <None Include="wwwroot\vendors\bootstrap\.github\ISSUE_TEMPLATE\bug_report.md" />
+    <None Include="wwwroot\vendors\bootstrap\.github\ISSUE_TEMPLATE\feature.md" />
+    <None Include="wwwroot\vendors\bootstrap\.github\ISSUE_TEMPLATE\feature_request.md" />
+    <None Include="wwwroot\vendors\bootstrap\.github\SUPPORT.md" />
+    <None Include="wwwroot\vendors\Chart.js\.github\ISSUE_TEMPLATE.md" />
+    <None Include="wwwroot\vendors\Chart.js\.github\PULL_REQUEST_TEMPLATE.md" />
+    <None Include="wwwroot\vendors\echarts\.github\CONTRIBUTING.md" />
+    <None Include="wwwroot\vendors\echarts\.github\ISSUE_TEMPLATE.md" />
+  </ItemGroup>
+
+</Project>

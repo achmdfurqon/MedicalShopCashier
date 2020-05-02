@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "Medical Shop Admin";
+    Layout = "~/Views/Layout/_Layout.cshtml";
+}
+
+<div class="right_col" role="main">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Data Suppliers</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li style="padding-left:50px">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <div class="card-box table-responsive">
+                                <a class="btn btn-primary" href="" onclick="sClearScreen()" data-toggle="modal" data-target="#sModal">Create New</a>
+                                <table id="sTable" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Name</th>
+                                            <th width="15%">Join Date</th>
+                                            <th width="10%">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="sModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Supplier Form</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" id="sIdText" />
+                        <div class="form-group">
+                            <label for="Name">Name</label>
+                            <input type="text" id="sNameText" class="form-control" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="sSave" onclick="sValidation();">Submit</button>
+                        <button type="button" class="btn btn-primary" id="sUpdate" onclick="sValidation();">Update</button>
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <!-- jQuery -->
+    <script src="~/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="~/vendors/nprogress/nprogress.js"></script>
+    <!-- iCheck -->
+    <script src="~/vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+    <script src="~/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="~/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="~/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="~/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="~/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script src="~/scripts/Supplier.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="~/build/js/custom.min.js"></script>
+}
