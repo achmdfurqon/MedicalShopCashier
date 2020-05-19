@@ -67,7 +67,7 @@
                         <span class="txt1">
                             Forgot
                         </span>
-                        <a class="txt2" href="#">
+                        <a class="txt2" href="#" onclick="ClearField()" data-toggle="modal" data-target="#forgot-modal">
                             Username / Password?
                         </a>
                     </div>
@@ -87,19 +87,14 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="form-group login-card-body">
-                        <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
+                        <p class="login-box-msg">You forgot your password? Please entry your email to reset your password.</p>
                         <div class="input-group mb-4">
-                            <input type="email" id="uEmail" class="form-control" placeholder="Email">
-                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="fas fa-envelope"></span>
-                                </div>
-                            </div>
+                            <input type="email" id="uEmail" class="form-control" placeholder="Email">                            
                         </div>
                         <div id="forgot-alert" hidden></div>
                         <div class="row">
                             <div class="col-12">
-                                <button class="btn btn-primary btn-block" onclick=uValidation();>Request New Password</button>
+                                <button class="btn btn-primary btn-block" onclick=uValidation();>Reset Password</button>
                             </div>
                             <!-- /.col -->
                         </div>
@@ -127,7 +122,7 @@
     </script>
     <!--===============================================================================================-->
     <script src="~/login/js/main.js"></script>
-    <script src="~/scripts/User.js"></script>
+    <script src="~/scripts/Login.js"></script>
     <script type="text/javascript">
         $(".toggle-password").click(function () {
             $(this).toggleClass("fa-eye fa-eye-slash");
@@ -138,6 +133,49 @@
                 input.attr("type", "password");
             }
         });
+
+        function ClearField() {
+            $("#uEmail").val('');
+        }
+
+        function uValidation() {
+            if ($("#uEmail").val() == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please Fill empty field'
+                })
+            } else {
+                SendEmail();
+            }
+        }
+
+        function SendEmail() {
+            debugger;
+            $.ajax({
+                "url": "/Users/SendLink",
+                "type": "POST",
+                "data": { email: $("#uEmail").val() }
+            }).then((result) => {
+                if (result.data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Check your email to change password',
+                        text: 'Success!'
+                    }).then((hasil) => {
+                        window.location.reload();
+                    });
+                    $("#forgot-modal").modal("hide");
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'There is something wrong',
+                        text: 'Failed!'
+                    })
+                }
+            })
+        }
     </script>
 </body>
 </html>

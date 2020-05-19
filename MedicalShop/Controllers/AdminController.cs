@@ -110,13 +110,13 @@ namespace MedicalShop.Controllers
             var result = responseTask.Result;
             if (result.IsSuccessStatusCode)
             {
-                var readTask = result.Content.ReadAsAsync<IEnumerable<Sale>>();
+                var readTask = result.Content.ReadAsAsync<IEnumerable<SaleReport>>();
                 readTask.Wait();
                 var list = readTask.Result;
-                charts = list.Select(s => new EChart { Name = s.Product.Name, Value = s.Quantity }).ToList();                
+                charts = list.Select(s => new EChart { Name = s.Name, Value = s.Qty }).ToList();                
                 //charts = list.Select(s => new EChart { Name = s.Product.Name, Value = s.Quantity }).GroupBy(g => g.Name).ToList();                
             }
-            return Json(new { valueX = charts.Select(c => c.Name), valueY = charts.Select(c => c.Value) });
+            return Json(new { valueX = charts.Select(c => c.Name).ToArray(), valueY = charts.Select(c => c.Value).ToArray() });
         }
         #endregion
 
@@ -516,5 +516,107 @@ namespace MedicalShop.Controllers
                 contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 fileDownloadName: "ProductsList.xlsx");
         }
+
+        #region User
+        public IActionResult Users()
+        {
+            ViewBag.Roles = GetRoles();
+            return View();
+        }
+
+        public JsonResult GetUsers()
+        {
+            IList<UserVM> users = null;
+            var responseTask = httpClient.GetAsync("Users");
+            responseTask.Wait();
+            var result = responseTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var readTask = result.Content.ReadAsAsync<IList<UserVM>>();
+                readTask.Wait();
+                users = readTask.Result;
+            }
+            return Json(new { data = users });
+        }
+
+        public List<IdentityRole> GetRoles()
+        {
+            List<IdentityRole> roles = null;
+            var responseTask = httpClient.GetAsync("Users/Roles");
+            responseTask.Wait();
+            var result = responseTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var readTask = result.Content.ReadAsAsync<IList<IdentityRole>>();
+                readTask.Wait();
+                roles = readTask.Result.ToList();
+            }
+            return roles;
+        }
+
+        public JsonResult GetRole(string id)
+        {
+            var get = httpClient.GetAsync("Users/Role/" + id).Result;
+            if (get.IsSuccessStatusCode)
+            {
+                ViewBag.Roles = get.Content.ReadAsAsync<IList<IdentityRole>>().Result;
+            }
+            return Json(new { get.StatusCode });
+        }
+
+        public ActionResult CreateUser(UserVM user)
+        {
+            try
+            {
+                ViewBag.Roles = GetRoles();
+                var myContent = JsonConvert.SerializeObject(user);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var affectedRow = httpClient.PostAsync("Users", byteContent).Result;
+                return Json(new { data = affectedRow, affectedRow.StatusCode });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AssignRole(string id, string role)
+        {
+            try
+            {
+                var update = httpClient.GetAsync("Users/AssignRole?id=" + id + "&role=" + role).Result;
+                return Json(new { update.StatusCode });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult RemoveRole(string id, IdentityRole role)
+        {
+            try
+            {
+                var myContent = JsonConvert.SerializeObject(role);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                var ByteContent = new ByteArrayContent(buffer);
+                ByteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var update = httpClient.PutAsync("Users/RemoveRole/" + id, ByteContent).Result;
+                return Json(new { update.StatusCode });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult DeleteUser(string id)
+        {
+            var delete = httpClient.DeleteAsync("Users/" + id).Result;
+            return Json(new { data = delete });
+        }
+        #endregion
     }
 }

@@ -30,10 +30,10 @@ namespace API.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var result = await orders.GetOrders();
-            return Ok(result.Select(s => new Sale { Product = s.Product, Quantity = s.Quantity }).GroupBy(g => g.Product));
+            var result = orders.GetOrderReport();
+            return Ok(result);
         }
 
         [HttpPost]

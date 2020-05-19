@@ -1,4 +1,5 @@
 ﻿var orders = null;
+var pId = 0;
 $(function () {
     orders = $("#orderTable").DataTable({
         'responsive': true,
@@ -28,6 +29,22 @@ $(function () {
         ],
         'order':[ ]
     });
+
+    $.ajax({
+        url: "/Manager/ProductAutocomplete",
+        type: "GET",
+        success: function (result) {
+            var data = result.data;
+            $('#selectProduct').autocomplete({
+                lookup: data,
+                onSelect: function (suggestion) {
+                    debugger
+                    pId = suggestion.data;
+                }
+            });
+        }
+    });
+
     var tot = sumtotal(); 
     $("#transactionBox").hide();
 });
@@ -49,6 +66,13 @@ function Validation() {
             text: 'Please Fill Empty Field'
         })
     }
+    else if (pId == 0 ) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Product is Not Found'
+        })
+    }
     else if ($("#IdText").val() == "") {
         Save();
     }
@@ -65,7 +89,7 @@ function Validation() {
 function Save() {
     debugger
     var order = new Object();
-    order.ProductId = $("#selectProduct").val();
+    order.ProductId = pId; //$("#selectProduct").val();
     order.Quantity = $("#QtyText").val();
     debugger
     $.ajax({
@@ -82,6 +106,7 @@ function Save() {
             }).then((hasil) => {
                 orders.ajax.reload();
                 sumtotal();
+                pId = 0;
             });
             $("#Modal").modal("hide");
         }
@@ -227,12 +252,12 @@ function AddTransaction() {
                     $("#tdate").text(moment(result.data.date).format('DD MMMM YYYY, HH:mm'));
                     $("#totalp").text(result.data.totalPrice);
                     $("#cash").text(result.data.cash);
-                    $("#change").text(result.data.change);
-                    debugger
-                    $("#ordersBox").hide();
-                    $("#transactionBox").show();
+                    $("#change").text(result.data.change);                   
                     //}
                 })
+                debugger
+                $("#ordersBox").hide();
+                $("#transactionBox").show();
             });
             $("#tModal").modal("hide");
         }

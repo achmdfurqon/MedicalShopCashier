@@ -31,4 +31,25 @@ namespace Data.Models
         public int length { get; set; }
         public int filterLength { get; set; }
     }
+
+    public class DateRange
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateRange() { }
+        public DateRange(DateTime start, DateTime end)
+        {
+            StartDate = start;
+            EndDate = end;
+        }
+    }
+
+    public class Report
+    {
+        public string Product { get; set; }
+        public int QtyIn { get; set; }
+        public int Purchase { get; set; }
+        public int QtyOut { get; set; }
+        public int Sale { get; set; }
+    }
 }

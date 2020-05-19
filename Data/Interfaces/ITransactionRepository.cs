@@ -13,12 +13,13 @@ namespace Data.Interfaces
         Task<IEnumerable<TransactionDetail>> SearchTransactions(string keyword);
         TransactionDetail GetTransaction(int id);
         int AddTransaction(Transaction transaction);
+        Task<IEnumerable<Report>> ReportByDate(DateRange date);
     }
 
     public interface ISaleRepository
     {
         Task<IEnumerable<Sale>> GetOrders();
-        Sale GetOrder(int id);
+        IEnumerable<SaleReport> GetOrderReport();
         int AddOrder(SaleVM sale);
         int CancelOrder(int id);
     }

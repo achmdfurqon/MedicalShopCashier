@@ -57,7 +57,7 @@ function sValidation() {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Please Fill To Do List'
+            text: 'Please Fill Empty Field'
         })
     }
     else if ($("#sIdText").val() == "" || $("#sIdText").val() == " ") {
@@ -175,7 +175,7 @@ function sDelete(id) {
                 "data": { Id: id }
             }).then((hasil) => {
                 debugger
-                if (hasil.statusCode == 200) {
+                if (hasil.data.statusCode == 200) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Your data has been deleted',

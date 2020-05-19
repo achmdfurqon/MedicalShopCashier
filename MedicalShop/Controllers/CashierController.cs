@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Data.Models;
 using DataTables.AspNet.AspNetCore;
 using DataTables.AspNet.Core;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -28,7 +33,7 @@ namespace MedicalShop.Controllers
             if (HttpContext.Session.GetString("UserId") != null)
             {
                 var role = HttpContext.Session.GetString("Role");
-                if (role.Contains("Cashier") || role.Contains("Admin"))
+                if (role.Contains("i"))
                 {
                     ViewBag.Products = Products();
                     return View();
@@ -139,8 +144,183 @@ namespace MedicalShop.Controllers
                 readTask.Wait();
                 var transactions = readTask.Result;
                 transaction = transactions.LastOrDefault();
+                SendEmail(transaction);
             }
             return Json(new { data = transaction });
+        }
+
+        public void SendEmail(TransactionDetail transaction)
+        {
+            try
+            {
+                var file = ReportTransaction(transaction);
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("furqon2993@gmail.com");
+                mail.To.Add("achmdfurqon@gmail.com");
+                mail.Subject = "Transaction Report";
+                mail.Body = "File Report is in the attachment below.";
+                Attachment attachment = new Attachment(file, "report.pdf");
+                mail.Attachments.Add(attachment);
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com");
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.EnableSsl = true;
+                smtp.Credentials = new NetworkCredential("furqon2993@gmail.com", "39919020");
+                smtp.Send(mail);
+            }
+            catch
+            {
+                
+            }            
+        }
+
+        public MemoryStream ReportTransaction(TransactionDetail transaction)
+        {
+            #region Declaration
+            int maxColumn = 5;
+            PdfPTable pdf = new PdfPTable(maxColumn);
+            MemoryStream memory = new MemoryStream();
+            Document document = new Document();
+            document.SetPageSize(PageSize.A4);
+            document.SetMargins(30f, 30f, 30f, 30f);
+            pdf.WidthPercentage = 100;
+            pdf.HorizontalAlignment = Element.ALIGN_LEFT;
+            Font font = FontFactory.GetFont("Arial", 8f, 1);
+            PdfWriter writer = PdfWriter.GetInstance(document, memory);
+            document.Open();
+            pdf.SetWidths(new float[] { 5f, 80f, 40f, 30f, 50f });
+            #endregion
+            #region Header
+            font = FontFactory.GetFont("Tahoma", 11f, 1);
+            PdfPCell cell = new PdfPCell(new Phrase("Transaction", font));
+            cell.Colspan = 2;
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            cell.ExtraParagraphSpace = 0;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase(": " + transaction.Code, font));
+            cell.Colspan = 3;
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            cell.ExtraParagraphSpace = 0;
+            pdf.AddCell(cell);
+            pdf.CompleteRow();
+            font = FontFactory.GetFont("Tahoma", 9f, 1);
+            cell = new PdfPCell(new Phrase("Date", font));
+            cell.Colspan = 2;
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            cell.ExtraParagraphSpace = 2;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase(": " + transaction.Date, font));
+            cell.Colspan = 3;
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            cell.ExtraParagraphSpace = 2;
+            pdf.AddCell(cell);
+            pdf.CompleteRow();
+            #endregion
+            #region Body
+            font = FontFactory.GetFont("Tahoma", 8f, 0);
+            int number = 1;
+            foreach (var report in transaction.Sales)
+            {
+                cell = new PdfPCell(new Phrase(number++.ToString(), font));
+                cell.Border = 0;
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.BackgroundColor = BaseColor.WHITE;
+                pdf.AddCell(cell);
+                cell = new PdfPCell(new Phrase(report.Product.Name, font));
+                cell.Border = 0;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.BackgroundColor = BaseColor.WHITE;
+                pdf.AddCell(cell);
+                cell = new PdfPCell(new Phrase(report.Product.Price.ToString(), font));
+                cell.Border = 0;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.BackgroundColor = BaseColor.WHITE;
+                pdf.AddCell(cell);
+                cell = new PdfPCell(new Phrase(report.Quantity.ToString(), font));
+                cell.Border = 0;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.BackgroundColor = BaseColor.WHITE;
+                pdf.AddCell(cell);
+                cell = new PdfPCell(new Phrase(report.SubTotal.ToString(), font));
+                cell.Border = 0;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.BackgroundColor = BaseColor.WHITE;
+                pdf.AddCell(cell);
+                pdf.CompleteRow();
+            }
+            cell = new PdfPCell(new Phrase("", font));
+            cell.Colspan = 5;
+            cell.Border = 0;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.CompleteRow();
+            cell = new PdfPCell(new Phrase("", font));
+            cell.Colspan = 3;
+            cell.Border = 0;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase("Total", font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase(transaction.TotalPrice.ToString(), font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            pdf.CompleteRow();
+            cell = new PdfPCell(new Phrase("", font));
+            cell.Colspan = 3;
+            cell.Border = 0;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase("Cash", font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase(transaction.Cash.ToString(), font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            pdf.CompleteRow();
+            cell = new PdfPCell(new Phrase("", font));
+            cell.Colspan = 3;
+            cell.Border = 0;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase("Change", font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            cell = new PdfPCell(new Phrase(transaction.Change.ToString(), font));
+            cell.Border = 0;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            cell.BackgroundColor = BaseColor.WHITE;
+            pdf.AddCell(cell);
+            pdf.CompleteRow();
+            #endregion
+            pdf.HeaderRows = 2;
+            document.Add(pdf);
+            writer.CloseStream = false;
+            document.Close();
+            memory.Position = 0;
+            return memory;
         }
 
         public IActionResult Transactions()
@@ -164,7 +344,7 @@ namespace MedicalShop.Controllers
             return Json(new { data = transactions });
         }
 
-        public JsonResult GetTransaction(int id)
+        public JsonResult GetTransactionById(int id)
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", HttpContext.Session.GetString("Token"));
             TransactionDetail transaction = null;
@@ -177,7 +357,7 @@ namespace MedicalShop.Controllers
                 readTask.Wait();
                 transaction = readTask.Result;
             }
-            return Json(new { data = transaction });
+            return Json(new { data = transaction.Sales });
         }
         #endregion
 

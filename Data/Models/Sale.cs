@@ -16,4 +16,11 @@ namespace Data.Models
         public int ProductId { get; set; }
         public int Quantity { get; set; }
     }
+
+    public class SaleReport
+    {
+        public string Name { get; set; }
+        public int? Qty { get; set; } = 0;
+        public int? Price { get; set; } = 0;
+    }
 }

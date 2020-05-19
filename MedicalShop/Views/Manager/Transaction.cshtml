@@ -1,15 +1,166 @@
 ﻿
 @{
-    Layout = null;
+    ViewData["Title"] = "Medical Shop Manager";
+    Layout = "~/Views/Layout/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<div class="right_col" role="main">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewData["Title"]</h3>
+        </div>
+    </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Transaction</title>
-</head>
-<body>
-</body>
-</html>
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Data Report</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li style="padding-left:50px">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;">
+                                <i class="fa fa-calendar"></i> <span></span> <i class="fa fa-caret-down"></i>
+                            </div>
+                            <hr />
+                            <div>
+                                <button id="exportpdf" class="btn btn-sm btn-danger"><i class="fa fa-file-pdf"></i> PDF</button>
+                                <button id="exportexcel" class="btn btn-sm btn-success"><i class="fa fa-file-excel"></i> Excel</button>
+                            </div>
+                            <div class="card-box table-responsive">
+                                <table id="tblReport" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Product</th>
+                                            <th width="15%">In</th>
+                                            <th width="15%">Purchase</th>
+                                            <th width="15%">Out</th>
+                                            <th width="15%">Sale</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <!-- jQuery -->
+    <script src="~/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="~/vendors/nprogress/nprogress.js"></script>
+    <!-- iCheck -->
+    <script src="~/vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+    <script src="~/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="~/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="~/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="~/vendors/jszip/dist/jszip.min.js"></script>
+    <script src="~/vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="~/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script type="text/javascript">
+        $(function () {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            var r = null;
+            var s = start.format('MM/DD/YYYYY');
+            var e = end.format('MM/DD/YYYYY');
+
+            $("#exportpdf").click(function () {
+                debugger
+                window.open('../Manager/ExportPDF?start=' + s + '&end=' + e, '_blank');
+            });
+
+            $("#exportexcel").click(function () {
+                debugger
+                $.ajax({
+                    "url": "/Manager/ExportExcel",
+                    "dataType": "json",
+                    "data": { start: s, end: e }
+                })
+            });
+            
+            function cb(start, end) {
+                debugger                
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')); 
+                s = start.format('MM/DD/YYYYY');
+                e = end.format('MM/DD/YYYYY');
+                if (r == null) {
+                    r = $("#tblReport").DataTable({
+                        'responsive': true,
+                        'ajax': "/Report/Data?start=" + s + "&end=" + e,
+                        'columns': [
+                            {
+                                data: null,
+                                render: function (data, type, row, meta) {
+                                    return meta.row + meta.settings._iDisplayStart + 1;
+                                }
+                            },
+                            { data: "product" },
+                            { data: "qtyIn" },
+                            { data: "purchase" },
+                            { data: "qtyOut" },
+                            { data: "sale" }
+                        ],
+                        'columnDefs': [
+                            {
+                                "orderable": false,
+                                "targets": [0, 1, 2, 3, 4, 5]
+                            }
+                        ],
+                        'order': []
+                    });
+                } else {
+                    r.ajax.url("/Report/Data?start=" + s + "&end=" + e).load();
+                }
+            }
+            
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                minDate: '01/01/2000',
+                maxDate: moment(),
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, cb);
+            
+            cb(start, end);
+        });        
+    </script>
+}

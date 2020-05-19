@@ -109,5 +109,14 @@ namespace Data.Repositories
             var result = sql.Execute(sp, param, commandType: CommandType.StoredProcedure);
             return result;
         }
+
+        public async Task<IEnumerable<Report>> ReportByDate(DateRange date)
+        {
+            var sp = "SP_ReportByDate";
+            param.Add("StartDate", date.StartDate);
+            param.Add("EndDate", date.EndDate);
+            var result = await sql.QueryAsync<Report>(sp, param, commandType: CommandType.StoredProcedure);
+            return result;
+        }
     }
 }

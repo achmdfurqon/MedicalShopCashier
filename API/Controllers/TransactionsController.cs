@@ -41,5 +41,13 @@ namespace API.Controllers
             var result = _transaction.AddTransaction(transaction);
             return Ok(result);
         }
+
+        [HttpGet("Report")]
+        public async Task<IActionResult> Report(DateTime start, DateTime end)
+        {
+            var date = new DateRange(start, end);
+            var result = await _transaction.ReportByDate(date);
+            return Ok(result);
+        }
     }
 }

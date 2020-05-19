@@ -36,20 +36,10 @@ namespace Data.Repositories
             return result;
         }
 
-        public Sale GetOrder(int id)
+        public IEnumerable<SaleReport> GetOrderReport()
         {
             var sp = "SP_GetOrder";
-            param.Add("Id", id);
-            var result = sql.Query<Sale, Product, Sale>(
-                sp, map: (o, p) =>
-                {
-                    o.Product = p;
-                    return o;
-                },
-                param: param,
-                splitOn: "ProductId",
-                commandType: CommandType.StoredProcedure
-            ).SingleOrDefault();
+            var result = sql.Query<SaleReport>(sp, commandType: CommandType.StoredProcedure);
             return result;
         }
 

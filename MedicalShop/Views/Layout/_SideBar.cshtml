@@ -3,70 +3,67 @@
 @using Data.Models
 @inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager*@
 
-<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-    <div class="menu_section">
-        <h3>General</h3>
-        <ul class="nav side-menu">
-            @if (User.Identity.IsAuthenticated || @*signInManager.IsSignedIn(User) ||*@ Context.Session.GetString("Role")!=null)
-            {
-                if (User.IsInRole("Admin") || Context.Session.GetString("Role").Contains("Admin"))
-                {
-                    <li>
-                        <a href="#"><i class="fa fa-database"></i> Admin <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Admin">Dashboard</a></li>
-                            <li><a href="/Admin/Products">Products</a></li>
-                            <li><a href="/Admin/Suppliers">Suppliers</a></li>
-                        </ul>
-                    </li>
-                }
-                else if (User.IsInRole("Manager") || Context.Session.GetString("Role").Contains("Manager"))
-                {
-                    <li>
-                        <a href="#"><i class="fa fa-cogs"></i> Manager <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Manager">Purchases</a></li>
-                            <li><a href="/Manager/Report">Transactions</a></li>
-                        </ul>
-                    </li>
-                }
-                else if (User.IsInRole("Cashier") || Context.Session.GetString("Role").Contains("Cashier"))
-                {
-                    <li>
-                        <a href="#"><i class="fa fa-money"></i> Cashier <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Cashier">Orders</a></li>
-                            <li><a href="/Cashier/Transactions">Transactions</a></li>
-                        </ul>
-                    </li>
-                }
-                else
-                {
-                    <li>
-                        <a href="#"><i class="fa fa-database"></i> Admin <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Admin">Dashboard</a></li>
-                            <li><a href="/Admin/Products">Products</a></li>
-                            <li><a href="/Admin/Suppliers">Suppliers</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-cogs"></i> Manager <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Manager">Purchases</a></li>
-                            <li><a href="/Manager/Report">Transactions</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-money"></i> Cashier <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="/Cashier">Orders</a></li>
-                            <li><a href="/Cashier/Transactions">Transactions</a></li>
-                        </ul>
-                    </li>
-                }
-            }
-        </ul>
+    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+        <div class="menu_section">
+            <h3>General</h3>
+            <ul class="nav side-menu">
+                @if (User.Identity.IsAuthenticated ||@*signInManager.IsSignedIn(User) ||*@ /**/
+                                                                                                      Context.Session.GetString("Role") != null)
+                            {
+                                if (User.IsInRole("Admin") || Context.Session.GetString("Role").Contains("Admin"))
+                                {
+                                    <li>
+                                        <a href="#"><i class="fa fa-database"></i> Data Master <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Admin">Dashboard</a></li>
+                                            <li><a href="/Admin/Products">Products</a></li>
+                                            <li><a href="/Admin/Suppliers">Suppliers</a></li>
+                                            <li><a href="/Admin/Users">Users</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-cogs"></i> Purchases <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Manager">Purchases</a></li>
+                                            <li><a href="/Manager/Transaction">Transactions</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-money"></i> Sales <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Cashier">Orders</a></li>
+                                            <li><a href="/Cashier/Transactions">Transactions</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else if (User.IsInRole("Manager") || Context.Session.GetString("Role").Contains("Manager"))
+                                {
+                                    <li>
+                                        <a href="#"><i class="fa fa-cogs"></i> Purchases <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Manager">Purchases</a></li>
+                                            <li><a href="/Manager/Transaction">Transactions</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-money"></i> Sales <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Cashier">Orders</a></li>
+                                            <li><a href="/Cashier/Transactions">Transactions</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else if (User.IsInRole("Cashier") || Context.Session.GetString("Role").Contains("Cashier"))
+                                {
+                                    <li>
+                                        <a href="#"><i class="fa fa-money"></i> Sales <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Cashier">Orders</a></li>
+                                            <li><a href="/Cashier/Transactions">Transactions</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            }
+            </ul>
+        </div>
     </div>
-
-</div>

@@ -191,7 +191,7 @@ function pDelete(id) {
                 "data": { Id: id }
             }).then((hasil) => {
                 debugger
-                if (hasil.isSuccessStatusCode) {
+                if (hasil.data.isSuccessStatusCode) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Your data has been deleted',

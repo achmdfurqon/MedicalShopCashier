@@ -67,7 +67,7 @@
                     </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content">
+                <div class="x_content to-print">
                     <div class="row">
                         <div class="col-sm-4">
                             <h4>Transaction ID</h4>
@@ -88,18 +88,18 @@
                                             <th>Name</th>
                                             <th width="15%">Price</th>
                                             <th width="10%">Quantity</th>
-                                            <th>Subtotal</th>
+                                            <th width="25%">Subtotal</th>
                                         </tr>
                                     </thead>
                                     @*<tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>*@
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>*@
                                 </table>
                             </div>
                         </div>
@@ -108,16 +108,18 @@
                         <div class="col-sm-6">
                         </div>
                         <div class="col-sm-3">
-                            <label>Total Price</label>
-                            <label>Cash</label>
-                            <label>Change</label>
+                            <label>Total Price</label><br />
+                            <label>Cash</label><br />
+                            <label>Change</label><br />
                         </div>
                         <div class="col-sm-3">
-                            <label id="totalp">0</label>
-                            <label id="cash">0</label>
-                            <label id="change">0</label>
+                            <label id="totalp">0</label><br />
+                            <label id="cash">0</label><br />
+                            <label id="change">0</label><br />
                         </div>
                     </div>
+                </div>
+                <div>
                     <a class="btn btn-success" href="" onclick="BackOrders()">Back to Orders</a>
                     <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
                 </div>
@@ -133,13 +135,14 @@
                         <input type="hidden" class="form-control" id="IdText" />
                         <div class="form-group">
                             <label for="selectProduct">Product</label>
-                            <select id="selectProduct" class="form-control" style="width:100%">
-                                <option value=""> - Select Product - </option>
-                                @foreach (var product in ViewBag.Products)
-                                {
-                                    <option value="@product.Id">@product.Name - Rp @product.Price,-</option>
-                                }
-                            </select>
+                            <input type="text" id="selectProduct" class="form-control" placeholder="Product">
+                            @*<select id="selectProduct" class="form-control" style="width:100%">
+                                    <option value=""> - Select Product - </option>
+                                    @foreach (var product in ViewBag.Products)
+                                    {
+                                        <option value="@product.Id">@product.Name - Rp @product.Price,-</option>
+                                    }
+                                </select>*@
                         </div>
                         <div class="form-group">
                             <label for="Quantity">Quantity</label>
@@ -184,8 +187,10 @@
 </div>
 
 @section Scripts{
+    <link href="~/css/print-setting.css" rel="stylesheet">
     <!-- jQuery -->
     <script src="~/vendors/jquery/dist/jquery.min.js"></script>
+    <script src="~/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <!-- Bootstrap -->
@@ -219,7 +224,7 @@
     <!-- Custom Theme Scripts -->
     <script src="~/build/js/custom.min.js"></script>
     <script>
-        $('#selectProduct').select2();
-        //$("#transactionBox").hide();
+                //$('#selectProduct').select2();
+                //$("#transactionBox").hide();
     </script>
 }
